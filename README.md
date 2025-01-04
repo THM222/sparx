@@ -44,3 +44,19 @@ To setup and run locally:
 4. `source venv/bin/activate`
 5. `pip install -r requirements.txt`
 6. `python -m main`
+
+
+### Disting
+
+Instructions below on how to create an executable file from the code. Assuming you start in the top level sparx/ directory (where this README is).
+
+1. `source venv/bin/activate`
+2. `pip install pyinstaller` - [PyInstaller Docs](https://pyinstaller.org/en/stable/)
+3. pyinstaller -onedir ui/main,py
+
+Once complete, you'll find two new directories `build` and `dist`.
+
+Double click `dist/main/main` to run the application.
+
+**N.B. It's a bit slow to start the first time you run, but will be near-instant on subsequent-runs.**
+
