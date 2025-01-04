@@ -1,3 +1,7 @@
+# custom
+**/.DS_Store
+**/sparx_*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
