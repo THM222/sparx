@@ -1,12 +1,12 @@
-import pandas as pd
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import numpy as np
+from pandas import read_excel
+# import matplotlib as mpl
+# import matplotlib.pyplot as plt
+from numpy import timedelta64 as np_timedelta64
 
 import logging
 
-import argparse
-import math
+# import argparse
+from math import floor
 
 from pptx import Presentation
 from pptx.chart.data import CategoryChartData
@@ -16,22 +16,19 @@ from pptx.util import Inches, Pt
 from pathlib import Path
 from datetime import datetime
 
-import pdb
-
 logger = logging.getLogger(__name__)
 
-def create_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument( '-i', '--input', help='path to the input file', type=str, required=True)
-    parser.add_argument( '-o', '--output', help='path to the output directory', type=str, required=True)
-    parser.add_argument( '-n', '--num_weeks', help='number of weeks of data to show, default 1', type=int, default=1)
-    parser.add_argument( '-x', '--xp_top_n', help='show top n students in the xp boost list, default 10', type=int, default=10)
-    parser.add_argument( '-l', '--il_top_n', help='show top n students in the independent learning list, default 10', type=int, default=10)
-    parser.add_argument( '-m', '--il_min_time_mins', help='minimum time in minutes for independent learning list, default 20 mins', type=int, default=20)
-    return parser
+# def create_parser():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument( '-i', '--input', help='path to the input file', type=str, required=True)
+#     parser.add_argument( '-o', '--output', help='path to the output directory', type=str, required=True)
+#     parser.add_argument( '-n', '--num_weeks', help='number of weeks of data to show, default 1', type=int, default=1)
+#     parser.add_argument( '-x', '--xp_top_n', help='show top n students in the xp boost list, default 10', type=int, default=10)
+#     parser.add_argument( '-l', '--il_top_n', help='show top n students in the independent learning list, default 10', type=int, default=10)
+#     parser.add_argument( '-m', '--il_min_time_mins', help='minimum time in minutes for independent learning list, default 20 mins', type=int, default=20)
+#     return parser
 
 # constants
-SPARX_DATA_FILE = './data.xlsx'
 HEADER_ROW = 3
 
 BY_STUDENT = 'By student'
@@ -68,9 +65,9 @@ IL='IL (h:mm)'
 YG_SORTER = {Y7: 0, Y8: 1, Y9: 2, Y10:3, Y11:4}
 SORTED_YEAR_GROUPS = [Y7, Y8, Y9, Y10, Y11]
 
-plt.style.use('bmh')
-#set globally 
-plt.rcParams['axes.labelsize'] = 24
+# plt.style.use('bmh')
+# #set globally 
+# plt.rcParams['axes.labelsize'] = 24
 
 
 class Parameters(object):
@@ -104,26 +101,26 @@ class DataToPublish(object):
         return str(self.__class__) + ": " + str(self.__dict__)
 
 
-def create_figure(data, xlabel, title, out_dir):
-    fig = data.plot(figsize=(30,15), x=xlabel, kind='bar', title=title, xlabel=xlabel).get_figure()
+# def create_figure(data, xlabel, title, out_dir):
+#     fig = data.plot(figsize=(30,15), x=xlabel, kind='bar', title=title, xlabel=xlabel).get_figure()
 
-    plt.gca().yaxis.set_major_formatter(mpl.ticker.PercentFormatter(xmax=1.0))
-    plt.gca().set_ylim([0, 1])
-    plt.gca().set_yticks(np.arange(0, 1.0, 0.05))
-    plt.gca().grid(True, axis='y')
+#     plt.gca().yaxis.set_major_formatter(mpl.ticker.PercentFormatter(xmax=1.0))
+#     plt.gca().set_ylim([0, 1])
+#     plt.gca().set_yticks(np.arange(0, 1.0, 0.05))
+#     plt.gca().grid(True, axis='y')
 
-    plt.gca().axes.title.set_size(32)
-    plt.gca().axes.tick_params(axis='both', labelsize=20 )
+#     plt.gca().axes.title.set_size(32)
+#     plt.gca().axes.tick_params(axis='both', labelsize=20 )
 
-    fig_path = f'{out_dir}/{title}.png'
-    fig.savefig(fig_path)
-    plt.close(fig)
-    return fig_path
+#     fig_path = f'{out_dir}/{title}.png'
+#     fig.savefig(fig_path)
+#     plt.close(fig)
+#     return fig_path
 
 
 def load_data(input_file, sheet_name):
     # read sheet data in
-    data = pd.read_excel(input_file, header=HEADER_ROW, sheet_name=sheet_name, na_values=['-'])
+    data = read_excel(input_file, header=HEADER_ROW, sheet_name=sheet_name, na_values=['-'])
     return data.fillna(0)
 
 
@@ -148,7 +145,7 @@ def get_top_xp_boost(df, top_n):
 
 def get_top_independent_learning(df, top_n, il_time_mins):
     df_il = df[[FIRST_NAME, SURNAME, IL]]
-    df_il = df_il[ df_il[IL] > np.timedelta64(il_time_mins, 'm') ]
+    df_il = df_il[ df_il[IL] > np_timedelta64(il_time_mins, 'm') ]
     return df_il.sort_values(IL, ascending=False).head(top_n)
 
 
@@ -325,7 +322,7 @@ def add_chart(slide, data, title):
 def add_table(slide, table_data):
     rows, cols = get_num_of_rows_and_cols(table_data)
     max_width = 28
-    width = math.floor(28 / cols)
+    width = floor(28 / cols)
     diff = max_width - (width * cols)
 
     x, y, cx, cy = Inches(diff/2), Inches(1.5), Inches(width), Inches(1.5)
