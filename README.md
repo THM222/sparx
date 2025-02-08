@@ -41,7 +41,7 @@ To setup and run locally:
 1. `git clone https://github.com/THM222/sparx.git`
 2. `cd sparx/ui`
 3. `python -m venv venv`
-4. `source venv/bin/activate`
+4. `source venv/bin/activate` (or `.\venv\Source\Activate.ps1` from Windows Powershell) 
 5. `pip install -r requirements.txt`
 6. `python -m main`
 
@@ -50,9 +50,9 @@ To setup and run locally:
 
 Instructions below on how to create an executable file from the code. Assuming you start in the top level sparx/ directory (where this README is).
 
-1. `source venv/bin/activate`
+1. `source venv/bin/activate` (or `.\venv\Source\Activate.ps1` from Windows Powershell) 
 2. `pip install pyinstaller` - [PyInstaller Docs](https://pyinstaller.org/en/stable/)
-3. pyinstaller -onedir ui/main,py
+3. `pyinstaller -onedir ui/main.py`
 
 Once complete, you'll find two new directories `build` and `dist`.
 
